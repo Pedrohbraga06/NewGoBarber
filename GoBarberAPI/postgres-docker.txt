@@ -1,0 +1,3 @@
+docker run --name gostack_postgres -e POSTGRES_PASSWORD=docker -d postgres p 5434:5432
+
+docker start gostack_postgres
