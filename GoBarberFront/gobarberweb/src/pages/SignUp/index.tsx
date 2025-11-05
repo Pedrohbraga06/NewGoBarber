@@ -27,6 +27,7 @@ const SignUp: React.FC = () => {
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
       event.preventDefault();
+      // O objeto 'data' aqui estava usando strings vazias antes da correção
       const data = { name, email, password };
       try {
         const schema = Yup.object().shape({
@@ -41,6 +42,8 @@ const SignUp: React.FC = () => {
           abortEarly: false,
         });
 
+        // Este objeto 'formData' é redundante, mas funciona.
+        // Você poderia simplesmente usar await api.post('/users', data);
         const formData = {
           name: data.name,
           email: data.email,
@@ -59,6 +62,7 @@ const SignUp: React.FC = () => {
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const validationErrors = getValidationErrors(err);
+          // 💡 Se você estivesse usando Unform, injetaria os erros aqui: formRef.current?.setErrors(validationErrors);
           console.error('Validation errors:', validationErrors);
           return;
         }
@@ -70,7 +74,7 @@ const SignUp: React.FC = () => {
         });
       }
     },
-    [addToast, history],
+    [addToast, history, name, email, password], // CORREÇÃO APLICADA AQUI!
   );
 
   return (

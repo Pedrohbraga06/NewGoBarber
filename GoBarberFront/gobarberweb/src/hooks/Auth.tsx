@@ -4,15 +4,7 @@ import React, {
 import api from '../services/api';
 
 // Mock de usuários para desenvolvimento
-const mockUsers = [
-  {
-    id: '1',
-    name: 'Admin',
-    email: 'admin@gobarber.com',
-    password: '123456',
-    avatar_url: 'https://github.com/Pedrohbraga06.png'
-  }
-];
+
 
 interface AuthProviderProps {
   children: ReactNode;
