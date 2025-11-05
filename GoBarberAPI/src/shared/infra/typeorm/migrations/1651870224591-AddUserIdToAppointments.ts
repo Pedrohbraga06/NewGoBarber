@@ -5,14 +5,14 @@ import {
     TableForeignKey,
   } from 'typeorm';
   
-  export default class AddUserIdToAppointments1588861202769
+  export default class AddUserIdToAppointments1651870224591
     implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
       await queryRunner.addColumn(
         'appointments',
         new TableColumn({
           name: 'user_id',
-          type: 'uuid',
+          type: 'varchar',
           isNullable: true,
         }),
       );

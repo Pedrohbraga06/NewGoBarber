@@ -1,17 +1,34 @@
-{
-    "type": "postgres",
-    "host": "localhost",
-    "port": 5432,
-    "username": "postgres",
-    "password": "dauri!@#",
-    "database": "gobarber",
-    "entities": [
-        "./src/modules/**/infra/typeorm/entities/*.ts"
-    ],
-    "migrations": [
-        "./src/shared/infra/typeorm/migrations/*.ts"
-    ],
-    "cli": {
-        "migrationsDir": "./src/shared/infra/typeorm/migrations"
+[
+    {
+        "name": "default",
+        "type": "sqlite",
+        "database": "./src/shared/infra/typeorm/database.sqlite",
+        "entities": [
+            "./src/modules/**/infra/typeorm/entities/*.ts"
+        ],
+        "migrations": [
+            "./src/shared/infra/typeorm/migrations/*.ts"
+        ],
+        "cli": {
+            "migrationsDir": "./src/shared/infra/typeorm/migrations"
+        }
+    },
+    {
+        "name": "production",
+        "type": "postgres",
+        "host": "localhost",
+        "port": 5432,
+        "username": "postgres",
+        "password": "dauri!@#",
+        "database": "gobarber",
+        "entities": [
+            "./src/modules/**/infra/typeorm/entities/*.ts"
+        ],
+        "migrations": [
+            "./src/shared/infra/typeorm/migrations/*.ts"
+        ],
+        "cli": {
+            "migrationsDir": "./src/shared/infra/typeorm/migrations"
+        }
     }
-}
+]
