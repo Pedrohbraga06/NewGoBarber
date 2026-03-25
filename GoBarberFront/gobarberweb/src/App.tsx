@@ -11,3 +11,6 @@ const App: React.FC = () => (
       <GlobalStyle />
     </AppProvider>
   </Router>
+);
+
+export default App;

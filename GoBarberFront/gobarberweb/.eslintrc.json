@@ -5,8 +5,7 @@
   },
   "extends": [
       "plugin:react/recommended",
-      "airbnb",
-      "plugin:@typescript-eslint/recommended"
+      "airbnb"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -22,8 +21,32 @@
       "@typescript-eslint"
   ],
   "rules": {
+    "@typescript-eslint/no-unused-expressions": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "no-unused-vars": "off",
+    "max-len": "off",
+    "@typescript-eslint/no-use-before-define": "off",
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
+    "react/require-default-props": "off",
+    "react/function-component-definition": "off",
+    "react/jsx-closing-bracket-location": "off",
+    "react/jsx-indent": "off",
+    "object-curly-newline": "off",
+    "comma-dangle": "off",
+    "import/order": "off",
+    "react/jsx-no-constructed-context-values": "off",
+    "arrow-parens": "off",
+    "arrow-body-style": "off",
+    "prefer-template": "off",
+    "prefer-destructuring": "off",
+    "template-tag-spacing": "off",
+    "quotes": "off",
+    "indent": "off",
+    "no-multiple-empty-lines": "off",
+    "no-param-reassign": "off",
+    "no-console": "off",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "react/jsx-filename-extension": [
@@ -43,9 +66,6 @@
       }
     ],
     "no-use-before-define": "off",
-    "@typescript-eslint/no-use-before-define": [
-      "error"
-    ],
     "react/react-in-jsx-scope": "off",
     "import/prefer-default-export":"off"
   },

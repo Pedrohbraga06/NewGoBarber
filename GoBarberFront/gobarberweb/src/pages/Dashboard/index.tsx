@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   FiClock,
   FiPower,
-  FiCalendar,
-  FiUser
 } from 'react-icons/fi';
 import { useAuth } from '../../hooks/Auth';
 import { useToast } from '../../hooks/Toast';
@@ -66,7 +64,7 @@ const Dashboard: React.FC = () => {
         addToast({
           type: 'error',
           title: 'Erro ao carregar agendamentos',
-          description: 'Não foi possível carregar seus agendamentos.',
+          description: 'N�o foi poss�vel carregar seus agendamentos.',
         });
       } finally {
         setLoading(false);
@@ -112,7 +110,7 @@ const Dashboard: React.FC = () => {
 
       <Content>
         <Schedule>
-          <h1>Horários agendados</h1>
+          <h1>Hor�rios agendados</h1>
           <p>
             <span>{selectedDate.toLocaleDateString('pt-BR')}</span>
             <span>Hoje</span>
@@ -124,7 +122,7 @@ const Dashboard: React.FC = () => {
             <>
               {nextAppointment && (
                 <NextAppointment>
-                  <strong>Próximo atendimento</strong>
+                  <strong>Pr�ximo atendimento</strong>
                   <div>
                     <img
                       src={nextAppointment.user.avatar_url}
@@ -141,7 +139,7 @@ const Dashboard: React.FC = () => {
 
               {morningAppointments.length > 0 && (
                 <Section>
-                  <strong>Manhã</strong>
+                  <strong>Manh�</strong>
                   {morningAppointments.map(appointment => (
                     <Appointment key={appointment.id}>
                       <span>
@@ -188,3 +186,10 @@ const Dashboard: React.FC = () => {
               )}
             </>
           )}
+        </Schedule>
+      </Content>
+    </Container>
+  );
+};
+
+export default Dashboard;

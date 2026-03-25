@@ -86,6 +86,11 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ user: data.user, loading, signIn, signOut }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
 function useAuth(): AuthContextData {
   const context = useContext(AuthContext);
 

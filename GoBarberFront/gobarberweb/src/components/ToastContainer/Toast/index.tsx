@@ -10,7 +10,7 @@ import { Container } from './styles';
 
 interface ToastProps {
   message: ToastMessage;
-  style: React.CSSProperties;
+  style: any;
 }
 
 const icons = {

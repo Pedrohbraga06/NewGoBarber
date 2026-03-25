@@ -9,3 +9,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button: React.FC<ButtonProps> = ({ children, loading = false, disabled, ...rest }) => (
   <Container type="button" disabled={disabled || loading} {...rest}>
     {loading ? 'Carregando...' : children}
+  </Container>
+);
+
+export default Button;
