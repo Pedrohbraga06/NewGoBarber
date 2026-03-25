@@ -37,7 +37,10 @@ export const Brand = styled.div`
   gap: 16px;
 
   > img {
-    width: 150px;
+    width: 84px;
+    height: 84px;
+    object-fit: cover;
+    flex-shrink: 0;
   }
 
   div {

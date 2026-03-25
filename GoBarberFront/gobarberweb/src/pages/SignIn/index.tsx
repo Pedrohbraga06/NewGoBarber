@@ -9,7 +9,7 @@ import {
 } from 'react-icons/fi';
 import { Link, useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
-import logoImg from '../../assets/logo.svg';
+import logoImg from '../../assets/logo-bonzonis.png';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { useAuth } from '../../hooks/Auth';
@@ -94,7 +94,7 @@ const SignIn: React.FC = () => {
     <Container>
       <Content>
         <AnimationContainer>
-          <img src={logoImg} alt="GoBarber" />
+          <img src={logoImg} alt="Logo Bonzoni's" />
 
           <FormHeader>
             <span>Agenda clara para dias corridos</span>

@@ -58,7 +58,9 @@ export const AnimationContainer = styled.div`
   animation: ${appearFromRight} 1s;
 
   > img {
-    width: 176px;
+    width: 132px;
+    height: 132px;
+    object-fit: cover;
   }
 
   form {

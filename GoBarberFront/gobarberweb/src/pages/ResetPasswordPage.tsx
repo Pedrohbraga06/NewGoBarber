@@ -9,7 +9,7 @@ import {
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import * as Yup from 'yup';
 
-import logoImg from '../assets/logo.svg';
+import logoImg from '../assets/logo-bonzonis.png';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import { useToast } from '../hooks/Toast';
@@ -150,7 +150,7 @@ const ResetPasswordPage: React.FC = () => {
 
       <Content>
         <AnimationContainer>
-          <img src={logoImg} alt="GoBarber" />
+          <img src={logoImg} alt="Logo Bonzoni's" />
 
           <FormHeader>
             <span>Redefinicao de senha</span>

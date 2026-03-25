@@ -13,7 +13,7 @@ import {
 import { useAuth } from '../../hooks/Auth';
 import { useToast } from '../../hooks/Toast';
 import api from '../../services/api';
-import logoImg from '../../assets/logo.svg';
+import logoImg from '../../assets/logo-bonzonis.png';
 
 import {
   Agenda,
@@ -247,7 +247,7 @@ const Dashboard: React.FC = () => {
       <Header>
         <HeaderContent>
           <Brand>
-            <img src={logoImg} alt="GoBarber" />
+            <img src={logoImg} alt="Logo Bonzoni's" />
             <div>
               <span>Painel operacional</span>
               <strong>Agenda inteligente</strong>
