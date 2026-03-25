@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-const PUBLIC_ENDPOINTS = ['/sessions', '/users'];
+const PUBLIC_ENDPOINTS = [
+  '/sessions',
+  '/users',
+  '/password/forgot',
+  '/password/reset',
+];
 
 const isPublicEndpoint = (url?: string): boolean => {
   if (!url) {

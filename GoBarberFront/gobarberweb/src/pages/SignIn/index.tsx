@@ -43,12 +43,8 @@ const SignIn: React.FC = () => {
   const [errors, setErrors] = React.useState<FormErrors>({});
 
   const handlePasswordAssistance = useCallback(() => {
-    addToast({
-      type: 'info',
-      title: 'Recuperacao de senha em breve',
-      description: 'Enquanto isso, confirme se esta usando o e-mail e a senha cadastrados.',
-    });
-  }, [addToast]);
+    history.push('/forgot-password');
+  }, [history]);
 
   const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
