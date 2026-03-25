@@ -1,5 +1,12 @@
 import React, { useCallback, useRef, FormEvent } from 'react';
-import { FiLock, FiLogIn, FiMail } from 'react-icons/fi';
+import {
+  FiArrowRight,
+  FiCalendar,
+  FiClock,
+  FiLock,
+  FiMail,
+  FiShield,
+} from 'react-icons/fi';
 import { Link, useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 import logoImg from '../../assets/logo.svg';
@@ -8,12 +15,19 @@ import Input from '../../components/Input';
 import { useAuth } from '../../hooks/Auth';
 import { useToast } from '../../hooks/Toast';
 import getValidationErrors from '../../utils/getValidationErrors';
-import { Background, Container, Content, AnimationContainer } from './styles';
-
-interface SignInFormData {
-  email: string;
-  password: string;
-}
+import {
+  AnimationContainer,
+  Background,
+  BackgroundContent,
+  Container,
+  Content,
+  FormFooter,
+  FormHeader,
+  FormMeta,
+  HighlightList,
+  StatCard,
+  SupportButton,
+} from './styles';
 
 interface FormErrors {
   [key: string]: string;
@@ -28,10 +42,18 @@ const SignIn: React.FC = () => {
   const history = useHistory();
   const [errors, setErrors] = React.useState<FormErrors>({});
 
+  const handlePasswordAssistance = useCallback(() => {
+    addToast({
+      type: 'info',
+      title: 'Recuperacao de senha em breve',
+      description: 'Enquanto isso, confirme se esta usando o e-mail e a senha cadastrados.',
+    });
+  }, [addToast]);
+
   const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const email = emailRef.current?.value || '';
+    const email = emailRef.current?.value?.trim() || '';
     const password = passwordRef.current?.value || '';
     const data = { email, password };
 
@@ -40,9 +62,9 @@ const SignIn: React.FC = () => {
     try {
       const schema = Yup.object().shape({
         email: Yup.string()
-          .email('Digite um e-mail válido')
-          .required('E-mail obrigatório'),
-        password: Yup.string().required('Senha obrigatória'),
+          .email('Digite um e-mail valido')
+          .required('E-mail obrigatorio'),
+        password: Yup.string().required('Senha obrigatoria'),
       });
 
       await schema.validate(data, {
@@ -64,8 +86,10 @@ const SignIn: React.FC = () => {
 
       addToast({
         type: 'error',
-        title: 'Erro na autenticação',
-        description: 'Ocorreu um erro ao fazer login, cheque as credenciais.',
+        title: 'Erro na autenticacao',
+        description: err instanceof Error
+          ? err.message
+          : 'Ocorreu um erro ao fazer login. Confira suas credenciais e tente novamente.',
       });
     }
   }, [signIn, addToast, history]);
@@ -76,16 +100,26 @@ const SignIn: React.FC = () => {
         <AnimationContainer>
           <img src={logoImg} alt="GoBarber" />
 
-          <form onSubmit={handleSubmit}>
-            <h1>Faça seu logon</h1>
+          <FormHeader>
+            <span>Agenda clara para dias corridos</span>
+            <h1>Entre e acompanhe sua rotina sem perder tempo</h1>
+            <p>
+              Centralize horarios, clientes e proximos atendimentos em um painel
+              mais fluido e facil de consultar.
+            </p>
+          </FormHeader>
 
+          <form onSubmit={handleSubmit}>
             <Input
               ref={emailRef}
               name="email"
               icon={FiMail}
+              type="email"
               placeholder="E-mail"
               error={errors.email}
               disabled={loading}
+              autoComplete="email"
+              autoFocus
             />
             <Input
               ref={passwordRef}
@@ -95,22 +129,66 @@ const SignIn: React.FC = () => {
               placeholder="Senha"
               error={errors.password}
               disabled={loading}
+              autoComplete="current-password"
             />
 
             <Button type="submit" loading={loading}>
-              Entrar
+              Entrar no painel
             </Button>
 
-            <a href="/forgot-password">Esqueci minha senha</a>
+            <FormMeta>
+              <span>Use o e-mail da sua conta para liberar o painel rapidamente.</span>
+              <SupportButton type="button" onClick={handlePasswordAssistance}>
+                Preciso recuperar a senha
+              </SupportButton>
+            </FormMeta>
           </form>
 
-          <Link to="/signup">
-            <FiLogIn />
-            Criar conta
-          </Link>
+          <FormFooter>
+            <span>Ainda nao tem acesso?</span>
+            <Link to="/signup">
+              Criar conta
+              <FiArrowRight />
+            </Link>
+          </FormFooter>
         </AnimationContainer>
       </Content>
-      <Background />
+
+      <Background>
+        <BackgroundContent>
+          <span>GoBarber Studio</span>
+          <h2>Organize a agenda do dia antes mesmo do primeiro cliente chegar.</h2>
+
+          <HighlightList>
+            <li>
+              <FiClock size={20} />
+              <div>
+                <strong>Proximos horarios em foco</strong>
+                <p>Veja o que vem a seguir no turno sem procurar em varias telas.</p>
+              </div>
+            </li>
+            <li>
+              <FiCalendar size={20} />
+              <div>
+                <strong>Rotina mais previsivel</strong>
+                <p>Encontre clientes, horarios e contexto no mesmo fluxo.</p>
+              </div>
+            </li>
+            <li>
+              <FiShield size={20} />
+              <div>
+                <strong>Acesso simples e seguro</strong>
+                <p>Entre rapido e siga para o dashboard com menos atrito.</p>
+              </div>
+            </li>
+          </HighlightList>
+
+          <StatCard>
+            <strong>+120</strong>
+            <span>agendamentos acompanhados com mais contexto por semana</span>
+          </StatCard>
+        </BackgroundContent>
+      </Background>
     </Container>
   );
 };

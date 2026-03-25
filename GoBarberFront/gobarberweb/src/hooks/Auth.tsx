@@ -1,6 +1,7 @@
 import React, {
   createContext, useCallback, useContext, useState, ReactNode,
 } from 'react';
+import axios from 'axios';
 import api from '../services/api';
 
 interface AuthProviderProps {
@@ -33,6 +34,51 @@ interface AuthContextData {
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
+const getAuthErrorMessage = (error: unknown): string => {
+  if (axios.isAxiosError(error)) {
+    const responseData = error.response?.data;
+
+    if (typeof responseData === 'string' && responseData.trim()) {
+      return responseData;
+    }
+
+    if (responseData && typeof responseData === 'object') {
+      const message = 'message' in responseData ? responseData.message : null;
+      const errorText = 'error' in responseData ? responseData.error : null;
+
+      if (typeof message === 'string' && message.trim()) {
+        return message;
+      }
+
+      if (typeof errorText === 'string' && errorText.trim()) {
+        return errorText;
+      }
+    }
+
+    if (!error.response) {
+      return 'Nao foi possivel conectar ao backend. Verifique se a API esta rodando em http://localhost:3333.';
+    }
+
+    if (error.response.status === 401) {
+      return 'E-mail ou senha incorretos. Tente novamente.';
+    }
+
+    if (error.response.status === 400) {
+      return 'Os dados informados sao invalidos. Revise e tente novamente.';
+    }
+  }
+
+  if (error instanceof Error && error.message === 'Invalid response from server') {
+    return 'A API respondeu sem token ou usuario. Confira o backend de autenticacao.';
+  }
+
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+
+  return 'Nao foi possivel fazer login. Verifique suas credenciais e tente novamente.';
+};
+
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem('@GoBarber:token');
@@ -52,8 +98,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setLoading(true);
 
-      const response = await api.post('sessions', {
-        email,
+      const response = await api.post('/sessions', {
+        email: email.trim(),
         password,
       });
 
@@ -70,8 +116,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       setData({ token, user });
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Login failed. Please check your credentials.';
-      throw new Error(message);
+      throw new Error(getAuthErrorMessage(error));
     } finally {
       setLoading(false);
     }

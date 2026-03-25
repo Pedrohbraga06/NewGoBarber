@@ -32,6 +32,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
           ref={ref}
+          aria-invalid={!!error}
           {...rest}
         />
         {error && (
@@ -41,7 +42,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
       </Container>
     );
-  }
+  },
 );
 
 Input.displayName = 'Input';

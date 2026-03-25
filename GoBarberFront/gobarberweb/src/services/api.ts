@@ -1,5 +1,15 @@
 import axios from 'axios';
 
+const PUBLIC_ENDPOINTS = ['/sessions', '/users'];
+
+const isPublicEndpoint = (url?: string): boolean => {
+  if (!url) {
+    return false;
+  }
+
+  return PUBLIC_ENDPOINTS.some((endpoint) => url === endpoint || url.endsWith(endpoint));
+};
+
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3333',
   timeout: 10000,
@@ -8,9 +18,14 @@ const api = axios.create({
 // Request interceptor
 api.interceptors.request.use((config: any) => {
   const token = localStorage.getItem('@GoBarber:token');
-  if (token) {
+  const isPublicRequest = isPublicEndpoint(config.url);
+
+  if (token && !isPublicRequest) {
     config.headers.Authorization = `Bearer ${token}`;
+  } else if (config.headers?.Authorization) {
+    delete config.headers.Authorization;
   }
+
   return config;
 }, (error) => {
   return Promise.reject(error);
@@ -20,11 +35,17 @@ api.interceptors.request.use((config: any) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    const requestUrl = error.config?.url as string | undefined;
+    const isPublicRequest = isPublicEndpoint(requestUrl);
+
     // Handle 401 - Unauthorized/Token expired
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !isPublicRequest) {
       localStorage.removeItem('@GoBarber:token');
       localStorage.removeItem('@GoBarber:user');
-      window.location.href = '/';
+
+      if (window.location.pathname !== '/') {
+        window.location.href = '/';
+      }
     }
 
     // Handle 500 - Server error
