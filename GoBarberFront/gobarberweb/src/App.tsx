@@ -8,10 +8,6 @@ const App: React.FC = () => (
   <Router>
     <AppProvider>
       <Routes />
+      <GlobalStyle />
     </AppProvider>
-    <GlobalStyle />
-    </Router>
-
-);
-
-export default App;
+  </Router>

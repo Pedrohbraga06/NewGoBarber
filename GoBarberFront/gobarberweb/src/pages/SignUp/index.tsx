@@ -1,4 +1,4 @@
-import React, { useCallback, useState, FormEvent } from 'react';
+import React, { useCallback, useRef, FormEvent } from 'react';
 import { FiArrowLeft, FiLock, FiMail, FiUser } from 'react-icons/fi';
 import { Link, useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
@@ -17,18 +17,32 @@ interface SignUpFormData {
   password: string;
 }
 
+interface FormErrors {
+  [key: string]: string;
+}
+
 const SignUp: React.FC = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
   const { addToast } = useToast();
   const history = useHistory();
+  const [errors, setErrors] = React.useState<FormErrors>({});
+  const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = useCallback(
-    async (event: FormEvent) => {
+    async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      // O objeto 'data' aqui estava usando strings vazias antes da correção
+
+      const name = nameRef.current?.value || '';
+      const email = emailRef.current?.value || '';
+      const password = passwordRef.current?.value || '';
       const data = { name, email, password };
+
+      setErrors({});
+      setLoading(true);
+
       try {
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório'),
@@ -42,15 +56,7 @@ const SignUp: React.FC = () => {
           abortEarly: false,
         });
 
-        // Este objeto 'formData' é redundante, mas funciona.
-        // Você poderia simplesmente usar await api.post('/users', data);
-        const formData = {
-          name: data.name,
-          email: data.email,
-          password: data.password,
-        };
-
-        await api.post('/users', formData);
+        await api.post('/users', data);
 
         addToast({
           type: 'success',
@@ -62,9 +68,20 @@ const SignUp: React.FC = () => {
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const validationErrors = getValidationErrors(err);
-          // 💡 Se você estivesse usando Unform, injetaria os erros aqui: formRef.current?.setErrors(validationErrors);
-          console.error('Validation errors:', validationErrors);
+          setErrors(validationErrors);
           return;
+        }
+
+        if (err instanceof Error && 'response' in err) {
+          const response = (err as any).response;
+          if (response?.status === 409) {
+            addToast({
+              type: 'error',
+              title: 'E-mail já cadastrado',
+              description: 'Este e-mail já possui uma conta.',
+            });
+            return;
+          }
         }
 
         addToast({
@@ -72,9 +89,11 @@ const SignUp: React.FC = () => {
           title: 'Erro no cadastro',
           description: 'Ocorreu um erro ao fazer cadastro, tente novamente.',
         });
+      } finally {
+        setLoading(false);
       }
     },
-    [addToast, history, name, email, password], // CORREÇÃO APLICADA AQUI!
+    [addToast, history],
   );
 
   return (
@@ -88,29 +107,34 @@ const SignUp: React.FC = () => {
             <h1>Faça seu cadastro</h1>
 
             <Input
+              ref={nameRef}
               name="name"
               icon={FiUser}
               placeholder="Nome"
-              value={name}
-              onChange={e => setName(e.target.value)}
+              error={errors.name}
+              disabled={loading}
             />
             <Input
+              ref={emailRef}
               name="email"
               icon={FiMail}
               placeholder="E-mail"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              error={errors.email}
+              disabled={loading}
             />
             <Input
+              ref={passwordRef}
               name="password"
               icon={FiLock}
               type="password"
               placeholder="Senha"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              error={errors.password}
+              disabled={loading}
             />
 
-            <Button type="submit">Cadastrar</Button>
+            <Button type="submit" loading={loading}>
+              Cadastrar
+            </Button>
           </form>
 
           <Link to="/">

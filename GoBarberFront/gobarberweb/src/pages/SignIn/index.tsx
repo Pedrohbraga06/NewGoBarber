@@ -1,4 +1,4 @@
-import React, { useCallback, useState, FormEvent } from 'react';
+import React, { useCallback, useRef, FormEvent } from 'react';
 import { FiLock, FiLogIn, FiMail } from 'react-icons/fi';
 import { Link, useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
@@ -10,26 +10,34 @@ import { useToast } from '../../hooks/Toast';
 import getValidationErrors from '../../utils/getValidationErrors';
 import { Background, Container, Content, AnimationContainer } from './styles';
 
-
-
-
 interface SignInFormData {
   email: string;
   password: string;
 }
 
-const SignIn: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+interface FormErrors {
+  [key: string]: string;
+}
 
-  const { signIn } = useAuth();
+const SignIn: React.FC = () => {
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  const { signIn, loading } = useAuth();
   const { addToast } = useToast();
   const history = useHistory();
+  const [errors, setErrors] = React.useState<FormErrors>({});
 
-  const handleSubmit = useCallback(async (event: FormEvent) => {
+  const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const email = emailRef.current?.value || '';
+    const password = passwordRef.current?.value || '';
     const data = { email, password };
-      try {
+
+    setErrors({});
+
+    try {
       const schema = Yup.object().shape({
         email: Yup.string()
           .email('Digite um e-mail válido')
@@ -46,12 +54,11 @@ const SignIn: React.FC = () => {
         password: data.password,
       });
 
-      void history.push('/dashboard');
-
-      } catch (err) {
+      history.push('/dashboard');
+    } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const validationErrors = getValidationErrors(err);
-        console.error('Validation errors:', validationErrors);
+        setErrors(validationErrors);
         return;
       }
 
@@ -61,46 +68,51 @@ const SignIn: React.FC = () => {
         description: 'Ocorreu um erro ao fazer login, cheque as credenciais.',
       });
     }
-  }, [signIn, addToast, history, email, password]);
+  }, [signIn, addToast, history]);
 
   return (
     <Container>
       <Content>
         <AnimationContainer>
-        <img src={logoImg} alt="GoBarber" />
+          <img src={logoImg} alt="GoBarber" />
 
-        <form onSubmit={handleSubmit}>
-          <h1>Faça seu logon</h1>
+          <form onSubmit={handleSubmit}>
+            <h1>Faça seu logon</h1>
 
-          <Input
-            name="email"
-            icon={FiMail}
-            placeholder="E-mail"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
-          <Input
-            name="password"
-            icon={FiLock}
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-          <Button type="submit">Entrar</Button>
+            <Input
+              ref={emailRef}
+              name="email"
+              icon={FiMail}
+              placeholder="E-mail"
+              error={errors.email}
+              disabled={loading}
+            />
+            <Input
+              ref={passwordRef}
+              name="password"
+              icon={FiLock}
+              type="password"
+              placeholder="Senha"
+              error={errors.password}
+              disabled={loading}
+            />
 
-          <a href="forgot">Esqueci minha senha</a>
+            <Button type="submit" loading={loading}>
+              Entrar
+            </Button>
 
-        </form>
+            <a href="/forgot-password">Esqueci minha senha</a>
+          </form>
 
-        <Link to="/signup">
-          <FiLogIn />
-          Criar conta
-        </Link>
+          <Link to="/signup">
+            <FiLogIn />
+            Criar conta
+          </Link>
         </AnimationContainer>
       </Content>
       <Background />
     </Container>
   );
 };
+
 export default SignIn;

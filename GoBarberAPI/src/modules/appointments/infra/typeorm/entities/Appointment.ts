@@ -1,26 +1,33 @@
-import { 
+﻿import {
   Entity,
-   Column,
-   PrimaryGeneratedColumn,
-   CreateDateColumn,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne ,
+  ManyToOne,
   JoinColumn,
 } from 'typeorm';
 
-  import User from '@modules/users/infra/typeorm/entities/User';
+import User from '@modules/users/infra/typeorm/entities/User';
 
 @Entity('appointments')
 class Appointment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column() 
+  @Column()
   provider_id: string;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'provider_id' })
   provider: User;
+
+  @Column({ nullable: true })
+  user_id: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @Column('datetime')
   date: Date;
@@ -30,8 +37,6 @@ class Appointment {
 
   @UpdateDateColumn()
   updated_at: Date;
-
 }
 
 export default Appointment;
-

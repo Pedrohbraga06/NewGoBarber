@@ -3,9 +3,6 @@ import React, {
 } from 'react';
 import api from '../services/api';
 
-// Mock de usuários para desenvolvimento
-
-
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -29,6 +26,7 @@ interface SignInCredentials {
 
 interface AuthContextData {
   user: User;
+  loading: boolean;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
 }
@@ -41,61 +39,53 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const user = localStorage.getItem('@GoBarber:user');
 
     if (token && user) {
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
       return { token, user: JSON.parse(user) };
     }
 
     return {} as AuthState;
   });
 
+  const [loading, setLoading] = useState(false);
+
   const signIn = useCallback(async ({ email, password }: SignInCredentials) => {
     try {
-      const mockUser = {
-        id: '1',
-        name: 'Admin',
-        email: 'admin@gobarber.com',
-        avatar_url: 'https://github.com/Pedrohbraga06.png'
-      };
-      const mockToken = 'mock-token-123';
+      setLoading(true);
 
-      // Simula verificação de credenciais
-      if (email === 'admin@gobarber.com' && password === '123456') {
-        api.defaults.headers.Authorization = `Bearer ${mockToken}`;
-        localStorage.setItem('@GoBarber:token', mockToken);
-        localStorage.setItem('@GoBarber:user', JSON.stringify(mockUser));
-        setData({ token: mockToken, user: mockUser });
-        return;
-      }
-
-      // Se as credenciais não corresponderem, tenta a API
       const response = await api.post('sessions', {
         email,
         password,
       });
 
       const { token, user } = response.data;
-      api.defaults.headers.Authorization = `Bearer ${token}`;
+
+      // Valida resposta
+      if (!token || !user) {
+        throw new Error('Invalid response from server');
+      }
+
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
       localStorage.setItem('@GoBarber:token', token);
       localStorage.setItem('@GoBarber:user', JSON.stringify(user));
+
       setData({ token, user });
     } catch (error) {
-      throw new Error('Erro ao fazer login. Verifique suas credenciais.');
+      const message = error instanceof Error ? error.message : 'Login failed. Please check your credentials.';
+      throw new Error(message);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
   const signOut = useCallback(() => {
     localStorage.removeItem('@GoBarber:token');
     localStorage.removeItem('@GoBarber:user');
-
+    delete api.defaults.headers.common.Authorization;
     setData({} as AuthState);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
+    <AuthContext.Provider value={{ user: data.user, loading, signIn, signOut }}>
 function useAuth(): AuthContextData {
   const context = useContext(AuthContext);
 
