@@ -9,11 +9,13 @@ const tsyringe_1 = require("tsyringe");
 class AppointmentsController {
     async create(request, response) {
         const { provider_id, date } = request.body;
+        const user_id = request.user.id;
         const parsedDate = (0, date_fns_1.parseISO)(date);
-        const CreateAppointment = tsyringe_1.container.resolve(CreateAppointmentService_1.default);
-        const appointment = await CreateAppointment.execute({
+        const createAppointment = tsyringe_1.container.resolve(CreateAppointmentService_1.default);
+        const appointment = await createAppointment.execute({
             date: parsedDate,
             provider_id,
+            user_id,
         });
         return response.json(appointment);
     }

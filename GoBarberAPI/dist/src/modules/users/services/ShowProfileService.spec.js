@@ -4,13 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const AppError_1 = __importDefault(require("@shared/errors/AppError"));
-const fakeUsersRepository_1 = __importDefault(require("../repositories/fakes/fakeUsersRepository"));
+const FakeUsersRepository_1 = __importDefault(require("../repositories/fakes/FakeUsersRepository"));
 const ShowProfileService_1 = __importDefault(require("./ShowProfileService"));
 let fakeUsersRepository;
 let showProfile;
 describe('ShowProfile', () => {
     beforeEach(() => {
-        fakeUsersRepository = new fakeUsersRepository_1.default();
+        fakeUsersRepository = new FakeUsersRepository_1.default();
         showProfile = new ShowProfileService_1.default(fakeUsersRepository);
     });
     it('should be able show the profile', async () => {

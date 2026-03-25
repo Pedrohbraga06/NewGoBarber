@@ -9,9 +9,9 @@ class AppointmentsRepository {
     constructor() {
         this.ormRepository = (0, typeorm_1.getRepository)(Appointment_1.default);
     }
-    async findByDate(date) {
+    async findByDate(date, provider_id) {
         const findAppointment = await this.ormRepository.findOne({
-            where: { date },
+            where: { date, provider_id },
         });
         return findAppointment;
     }
@@ -36,12 +36,10 @@ class AppointmentsRepository {
         });
         return appointments;
     }
-    async create({ provider_id, 
-    // user_id,
-    date, }) {
+    async create({ provider_id, user_id, date, }) {
         const appointment = this.ormRepository.create({
             provider_id,
-            // user_id,
+            user_id,
             date,
         });
         await this.ormRepository.save(appointment);

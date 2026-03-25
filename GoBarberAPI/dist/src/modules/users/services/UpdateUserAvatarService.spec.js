@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const AppError_1 = __importDefault(require("@shared/errors/AppError"));
-const fakeUsersRepository_1 = __importDefault(require("../repositories/fakes/fakeUsersRepository"));
+const FakeUsersRepository_1 = __importDefault(require("../repositories/fakes/FakeUsersRepository"));
 const FakeStorageProvider_1 = __importDefault(require("@shared/container/providers/StorageProvider/fakes/FakeStorageProvider"));
 const UpdateUserAvatarService_1 = __importDefault(require("./UpdateUserAvatarService"));
 let fakeUsersRepository;
@@ -12,7 +12,7 @@ let fakeStorageProvider;
 let updateUserAvatar;
 describe('UpdateUserAvatar', () => {
     beforeEach(() => {
-        fakeUsersRepository = new fakeUsersRepository_1.default();
+        fakeUsersRepository = new FakeUsersRepository_1.default();
         fakeStorageProvider = new FakeStorageProvider_1.default();
         updateUserAvatar = new UpdateUserAvatarService_1.default(fakeUsersRepository, fakeStorageProvider);
     });
@@ -29,10 +29,10 @@ describe('UpdateUserAvatar', () => {
         expect(user.avatar).toBe('avatar.jpg');
     });
     it('should not be able to update a avatar from non existing user', async () => {
-        const fakeUsersRepository = new fakeUsersRepository_1.default();
+        const fakeUsersRepository = new FakeUsersRepository_1.default();
         const fakeStorageProvider = new FakeStorageProvider_1.default();
         const updateUserAvatar = new UpdateUserAvatarService_1.default(fakeUsersRepository, fakeStorageProvider);
-        expect(updateUserAvatar.execute({
+        await expect(updateUserAvatar.execute({
             user_id: 'none-existing-user',
             avatarFilename: 'avatar.jpg',
         })).rejects.toBeInstanceOf(AppError_1.default);

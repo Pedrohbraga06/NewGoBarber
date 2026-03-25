@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const AppError_1 = __importDefault(require("@shared/errors/AppError"));
 const FakeHashProvider_1 = __importDefault(require("../providers/HashProvider/fakes/FakeHashProvider"));
-const fakeUsersRepository_1 = __importDefault(require("../repositories/fakes/fakeUsersRepository"));
-const fakeUsersTokensRepository_1 = __importDefault(require("../repositories/fakes/fakeUsersTokensRepository"));
+const FakeUsersRepository_1 = __importDefault(require("../repositories/fakes/FakeUsersRepository"));
+const FakeUserTokensRepository_1 = __importDefault(require("../repositories/fakes/FakeUserTokensRepository"));
 const ResetPasswordService_1 = __importDefault(require("./ResetPasswordService"));
 let fakeUsersRepository;
 let fakeUserTokensRepository;
@@ -14,8 +14,8 @@ let fakeHashProvider;
 let resetPassword;
 describe('ResetPasswordService', () => {
     beforeEach(() => {
-        fakeUsersRepository = new fakeUsersRepository_1.default();
-        fakeUserTokensRepository = new fakeUsersTokensRepository_1.default();
+        fakeUsersRepository = new FakeUsersRepository_1.default();
+        fakeUserTokensRepository = new FakeUserTokensRepository_1.default();
         fakeHashProvider = new FakeHashProvider_1.default();
         resetPassword = new ResetPasswordService_1.default(fakeUsersRepository, fakeUserTokensRepository, fakeHashProvider);
     });

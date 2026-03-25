@@ -5,16 +5,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const AppError_1 = __importDefault(require("@shared/errors/AppError"));
 const FakeHashProvider_1 = __importDefault(require("../providers/HashProvider/fakes/FakeHashProvider"));
-const fakeUsersRepository_1 = __importDefault(require("../repositories/fakes/fakeUsersRepository"));
-const UpdateProfileSevice_1 = __importDefault(require("./UpdateProfileSevice"));
+const FakeUsersRepository_1 = __importDefault(require("../repositories/fakes/FakeUsersRepository"));
+const UpdateProfileService_1 = __importDefault(require("./UpdateProfileService"));
 let fakeUsersRepository;
 let fakeHashProvider;
 let updateProfile;
 describe('UpdateProfile', () => {
     beforeEach(() => {
-        fakeUsersRepository = new fakeUsersRepository_1.default();
+        fakeUsersRepository = new FakeUsersRepository_1.default();
         fakeHashProvider = new FakeHashProvider_1.default();
-        updateProfile = new UpdateProfileSevice_1.default(fakeUsersRepository, fakeHashProvider);
+        updateProfile = new UpdateProfileService_1.default(fakeUsersRepository, fakeHashProvider);
     });
     it('should be able update the profile', async () => {
         const user = await fakeUsersRepository.create({
@@ -31,7 +31,7 @@ describe('UpdateProfile', () => {
         expect(updatedUser.email).toBe('johntre@example.com');
     });
     it('should not be able update the profile from non-existing user', async () => {
-        expect(updateProfile.execute({
+        await expect(updateProfile.execute({
             user_id: 'non-existing-user-id',
             name: 'Test',
             email: 'test@example.com',

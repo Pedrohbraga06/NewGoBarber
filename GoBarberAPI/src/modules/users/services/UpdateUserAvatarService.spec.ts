@@ -1,5 +1,5 @@
 import AppError from "@shared/errors/AppError";
-import FakeUsersRepository from "../repositories/fakes/fakeUsersRepository";
+import FakeUsersRepository from "../repositories/fakes/FakeUsersRepository";
 import FakeStorageProvider from "@shared/container/providers/StorageProvider/fakes/FakeStorageProvider";
 import UpdateUserAvatarService from "./UpdateUserAvatarService";
 
@@ -38,7 +38,7 @@ describe('UpdateUserAvatar', () => {
         const fakeStorageProvider = new FakeStorageProvider();
         const updateUserAvatar = new UpdateUserAvatarService(fakeUsersRepository, fakeStorageProvider);
 
-        expect(updateUserAvatar.execute({
+        await expect(updateUserAvatar.execute({
             user_id: 'none-existing-user',
             avatarFilename:'avatar.jpg',
         })).rejects.toBeInstanceOf(AppError);

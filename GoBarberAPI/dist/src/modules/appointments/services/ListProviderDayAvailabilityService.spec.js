@@ -7,7 +7,7 @@ const FakeAppointmentsRepository_1 = __importDefault(require("../repositories/fa
 const ListProviderDayAvailabilityService_1 = __importDefault(require("./ListProviderDayAvailabilityService"));
 let fakeAppointmentsRepository;
 let listProviderDayAvailability;
-describe('ListProviderMonthAvailability', () => {
+describe('ListProviderDayAvailability', () => {
     beforeEach(() => {
         fakeAppointmentsRepository = new FakeAppointmentsRepository_1.default();
         listProviderDayAvailability = new ListProviderDayAvailabilityService_1.default(fakeAppointmentsRepository);

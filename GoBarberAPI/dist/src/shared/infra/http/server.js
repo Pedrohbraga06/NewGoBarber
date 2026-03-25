@@ -17,6 +17,7 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use('/files', express_1.default.static(upload_1.default.uploadsFolder));
 app.use(routes_1.default);
+// Error handling middleware
 app.use((err, request, response, _) => {
     if (err instanceof AppError_1.default) {
         return response.status(err.statusCode).json({
@@ -24,7 +25,13 @@ app.use((err, request, response, _) => {
             message: err.message,
         });
     }
-    console.error(err);
+    console.error({
+        timestamp: new Date().toISOString(),
+        method: request.method,
+        url: request.originalUrl,
+        error: err.message,
+        stack: err.stack,
+    });
     return response.status(500).json({
         status: 'error',
         message: 'Internal server error',

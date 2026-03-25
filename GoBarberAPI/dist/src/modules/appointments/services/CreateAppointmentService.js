@@ -19,19 +19,43 @@ const date_fns_1 = require("date-fns");
 const tsyringe_1 = require("tsyringe");
 const AppError_1 = __importDefault(require("@shared/errors/AppError"));
 let CreateAppointmentService = class CreateAppointmentService {
-    constructor(appointmentsRepository) {
+    constructor(appointmentsRepository, usersRepository) {
         this.appointmentsRepository = appointmentsRepository;
+        this.usersRepository = usersRepository;
     }
-    async execute({ date, provider_id }) {
+    async execute({ date, provider_id, user_id }) {
+        // Validar entrada
+        if (!provider_id || !user_id || !date) {
+            throw new AppError_1.default('Provider ID, User ID, and date are required.', 400);
+        }
+        // Não permitir mesmo usuário ser provider e cliente
+        if (provider_id === user_id) {
+            throw new AppError_1.default('You cannot book an appointment with yourself.', 400);
+        }
         const appointmentDate = (0, date_fns_1.startOfHour)(date);
-        const findAppointmentInSameDate = await this.appointmentsRepository.findByDate(appointmentDate);
+        // Verificar se é data no passado
+        if ((0, date_fns_1.isBefore)(appointmentDate, new Date())) {
+            throw new AppError_1.default('You cannot book an appointment in the past.', 400);
+        }
+        // Verificar horário comercial (8h - 17h)
+        const appointmentHour = (0, date_fns_1.getHours)(appointmentDate);
+        if (appointmentHour < 8 || appointmentHour >= 17) {
+            throw new AppError_1.default('Appointments can only be booked between 8 AM and 5 PM.', 400);
+        }
+        // Verificar se provider existe
+        const provider = await this.usersRepository.findById(provider_id);
+        if (!provider) {
+            throw new AppError_1.default('Provider not found.', 404);
+        }
+        // Verificar se o horário já está ocupado
+        const findAppointmentInSameDate = await this.appointmentsRepository.findByDate(appointmentDate, provider_id);
         if (findAppointmentInSameDate) {
-            throw new AppError_1.default('This appointment is already booked');
+            throw new AppError_1.default('This appointment time is already booked.', 409);
         }
         const appointment = await this.appointmentsRepository.create({
             provider_id,
+            user_id,
             date: appointmentDate,
-            user_id: ""
         });
         return appointment;
     }
@@ -39,6 +63,7 @@ let CreateAppointmentService = class CreateAppointmentService {
 CreateAppointmentService = __decorate([
     (0, tsyringe_1.injectable)(),
     __param(0, (0, tsyringe_1.inject)('AppointmentsRepository')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, (0, tsyringe_1.inject)('UsersRepository')),
+    __metadata("design:paramtypes", [Object, Object])
 ], CreateAppointmentService);
 exports.default = CreateAppointmentService;

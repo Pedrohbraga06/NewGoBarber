@@ -10,7 +10,7 @@ interface IRequest {
 }
 
 @injectable()
-class UpadteUserAvatarSErvice {
+class UpdateUserAvatarService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
@@ -42,4 +42,4 @@ class UpadteUserAvatarSErvice {
   }
 }
 
-export default UpadteUserAvatarSErvice;
+export default UpdateUserAvatarService;

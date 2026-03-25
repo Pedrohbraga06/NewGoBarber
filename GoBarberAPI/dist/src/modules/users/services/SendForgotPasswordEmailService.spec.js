@@ -6,17 +6,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const AppError_1 = __importDefault(require("@shared/errors/AppError"));
 const FakeMailProvider_1 = __importDefault(require("@shared/container/providers/MailProvider/fakes/FakeMailProvider"));
 const SendForgotPasswordEmailService_1 = __importDefault(require("./SendForgotPasswordEmailService"));
-const fakeUsersTokensRepository_1 = __importDefault(require("../repositories/fakes/fakeUsersTokensRepository"));
-const fakeUsersRepository_1 = __importDefault(require("../repositories/fakes/fakeUsersRepository"));
+const FakeUserTokensRepository_1 = __importDefault(require("../repositories/fakes/FakeUserTokensRepository"));
+const FakeUsersRepository_1 = __importDefault(require("../repositories/fakes/FakeUsersRepository"));
 let fakeUsersRepository;
 let fakeUserTokensRepository;
 let fakeMailProvider;
 let sendForgotPasswordEmail;
 describe('SendForgotPasswordEmail', () => {
     beforeEach(() => {
-        fakeUsersRepository = new fakeUsersRepository_1.default();
+        fakeUsersRepository = new FakeUsersRepository_1.default();
         fakeMailProvider = new FakeMailProvider_1.default();
-        fakeUserTokensRepository = new fakeUsersTokensRepository_1.default();
+        fakeUserTokensRepository = new FakeUserTokensRepository_1.default();
         sendForgotPasswordEmail = new SendForgotPasswordEmailService_1.default(fakeUsersRepository, fakeMailProvider, fakeUserTokensRepository);
     });
     it('should be able to recover the password using the email', async () => {

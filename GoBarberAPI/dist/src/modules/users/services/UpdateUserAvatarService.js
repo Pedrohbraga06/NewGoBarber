@@ -17,7 +17,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const AppError_1 = __importDefault(require("@shared/errors/AppError"));
 const tsyringe_1 = require("tsyringe");
-let UpadteUserAvatarSErvice = class UpadteUserAvatarSErvice {
+let UpdateUserAvatarService = class UpdateUserAvatarService {
     constructor(usersRepository, storageProvider) {
         this.usersRepository = usersRepository;
         this.storageProvider = storageProvider;
@@ -36,10 +36,10 @@ let UpadteUserAvatarSErvice = class UpadteUserAvatarSErvice {
         return user;
     }
 };
-UpadteUserAvatarSErvice = __decorate([
+UpdateUserAvatarService = __decorate([
     (0, tsyringe_1.injectable)(),
     __param(0, (0, tsyringe_1.inject)('UsersRepository')),
     __param(1, (0, tsyringe_1.inject)('StorageProvider')),
     __metadata("design:paramtypes", [Object, Object])
-], UpadteUserAvatarSErvice);
-exports.default = UpadteUserAvatarSErvice;
+], UpdateUserAvatarService);
+exports.default = UpdateUserAvatarService;

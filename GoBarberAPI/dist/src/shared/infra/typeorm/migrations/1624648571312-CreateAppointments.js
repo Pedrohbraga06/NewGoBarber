@@ -8,10 +8,9 @@ class CreateAppointments1624648571312 {
             columns: [
                 {
                     name: 'id',
-                    type: 'uuid',
+                    type: 'varchar',
                     isPrimary: true,
                     generationStrategy: 'uuid',
-                    default: 'uuid_generate_v4()',
                 },
                 {
                     name: 'provider',
@@ -20,7 +19,7 @@ class CreateAppointments1624648571312 {
                 },
                 {
                     name: 'date',
-                    type: 'timestamp with time zone',
+                    type: 'datetime',
                     isNullable: false,
                 },
                 {

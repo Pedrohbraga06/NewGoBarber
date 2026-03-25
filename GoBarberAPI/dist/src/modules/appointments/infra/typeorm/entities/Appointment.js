@@ -30,7 +30,16 @@ __decorate([
     __metadata("design:type", User_1.default)
 ], Appointment.prototype, "provider", void 0);
 __decorate([
-    (0, typeorm_1.Column)('timestamp with time zone'),
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Appointment.prototype, "user_id", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => User_1.default),
+    (0, typeorm_1.JoinColumn)({ name: 'user_id' }),
+    __metadata("design:type", User_1.default)
+], Appointment.prototype, "user", void 0);
+__decorate([
+    (0, typeorm_1.Column)('datetime'),
     __metadata("design:type", Date)
 ], Appointment.prototype, "date", void 0);
 __decorate([

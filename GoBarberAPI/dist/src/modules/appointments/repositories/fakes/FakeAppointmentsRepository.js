@@ -10,8 +10,9 @@ class FakeAppointmentsRepository {
     constructor() {
         this.appointments = [];
     }
-    async findByDate(date) {
-        const findAppointment = this.appointments.find(appointment => (0, date_fns_1.isEqual)(appointment.date, date));
+    async findByDate(date, provider_id) {
+        const findAppointment = this.appointments.find(appointment => (0, date_fns_1.isEqual)(appointment.date, date) &&
+            appointment.provider_id === provider_id);
         return findAppointment;
     }
     async findAllInMonthFromProvider({ provider_id, month, year, }) {

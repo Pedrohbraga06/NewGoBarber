@@ -6,7 +6,7 @@ import Appointment from '@modules/appointments/infra/typeorm/entities/Appointmen
 
 import IFindAllInDayFromProviderDTO from '@modules/appointments/dtos/IFindAllInDayFromProviderDTO';
 import IAppointmentsRepository from '../IAppointmentsRepository';
-import IFindAllInMonthFromProviderDTO from './IFindAllInMonthFromProviderDTO';
+import IFindAllInMonthFromProviderDTO from '@modules/appointments/dtos/IFindAllInMonthFromProviderDTO';
 
 export default class FakeAppointmentsRepository
   implements IAppointmentsRepository {

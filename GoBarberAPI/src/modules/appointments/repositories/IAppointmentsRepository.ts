@@ -2,7 +2,7 @@
 import ICreateAppointmentDTO from '../dtos/ICreateAppointmentDTO';
 
 import IFindAllInDayFromProviderDTO from '../dtos/IFindAllInDayFromProviderDTO';
-import IFindAllInMonthFromProviderDTO from './fakes/IFindAllInMonthFromProviderDTO';
+import IFindAllInMonthFromProviderDTO from '../dtos/IFindAllInMonthFromProviderDTO';
 
 export default interface IAppointmentsRepository {
   create(data: ICreateAppointmentDTO): Promise<Appointment>;

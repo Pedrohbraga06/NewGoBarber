@@ -25,13 +25,17 @@ let AuthenticateUserService = class AuthenticateUserService {
         this.hashProvider = hashProvider;
     }
     async execute({ email, password }) {
+        // Validação básica
+        if (!email || !password) {
+            throw new AppError_1.default('Email and password are required.', 400);
+        }
         const user = await this.usersRepository.findByEmail(email);
         if (!user) {
-            throw new AppError_1.default('Incorrect email/password conbination.', 401);
+            throw new AppError_1.default('Incorrect email or password combination.', 401);
         }
         const passwordMatched = await this.hashProvider.compareHash(password, user.password);
         if (!passwordMatched) {
-            throw new AppError_1.default('Incorrect email/password conbination.', 401);
+            throw new AppError_1.default('Incorrect email or password combination.', 401);
         }
         const { secret, expiresIn } = auth_1.default.jwt;
         const token = (0, jsonwebtoken_1.sign)({}, secret, {
