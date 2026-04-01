@@ -1,0 +1,13 @@
+[01:32:26.787] [INFO] [36mInitializing Storybook[39m
+[01:32:28.453] [DEBUG] Getting package.json info for C:\Projetos\NewGoBarber\package.json...
+[01:32:28.454] [DEBUG] Getting CLI versions from NPM for storybook...
+[01:32:28.454] [DEBUG] Executing command: npm info storybook version
+[01:32:30.376] [INFO] Adding Storybook version 10.3.3 to your project
+[01:32:30.380] [ERROR] Unable to initialize Storybook in this directory.
+
+Storybook couldn't detect a supported framework or configuration for your project. Make sure you're inside a framework project (e.g., React, Vue, Svelte, Angular, Next.js) and that its dependencies are installed.
+
+Tips:
+- Run init in an empty directory or create a new framework app first.
+- If this directory contains unrelated files, try a new directory for Storybook.
+[01:32:30.391] [INFO] Storybook collects completely anonymous usage telemetry. We use it to shape Storybook's roadmap and prioritize features. You can learn more, including how to opt out, at https://storybook.js.org/telemetry
