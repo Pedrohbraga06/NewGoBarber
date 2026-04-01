@@ -13,4 +13,7 @@ export default interface IAppointmentsRepository {
   findAllInDayFromProvider(
     data: IFindAllInDayFromProviderDTO,
   ): Promise<Appointment[]>;
+  countAppointmentsByUserInDay(user_id: string, date: Date): Promise<number>;
+  findById(id: string): Promise<Appointment | undefined>;
+  save(appointment: Appointment): Promise<Appointment>;
 }

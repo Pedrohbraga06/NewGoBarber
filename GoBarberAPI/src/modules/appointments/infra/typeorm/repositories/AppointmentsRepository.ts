@@ -82,6 +82,31 @@ class AppointmentsRepository implements IAppointmentsRepository {
 
     return appointment;
   }
+
+  public async countAppointmentsByUserInDay(user_id: string, date: Date): Promise<number> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const count = await this.ormRepository.count({
+      where: {
+        user_id,
+        date: Raw(dateFieldName => `${dateFieldName} >= '${startOfDay.toISOString()}' AND ${dateFieldName} <= '${endOfDay.toISOString()}'`),
+      },
+    });
+
+    return count;
+  }
+
+  public async findById(id: string): Promise<Appointment | undefined> {
+    const appointment = await this.ormRepository.findOne(id);
+    return appointment;
+  }
+
+  public async save(appointment: Appointment): Promise<Appointment> {
+    return this.ormRepository.save(appointment);
+  }
 }
 
 export default AppointmentsRepository;

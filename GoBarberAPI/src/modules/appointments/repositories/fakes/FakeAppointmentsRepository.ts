@@ -64,10 +64,37 @@ export default class FakeAppointmentsRepository
   }: ICreateAppointmentDTO): Promise<Appointment> {
     const appointment = new Appointment();
 
-    Object.assign(appointment, { id: uuid(), date, provider_id, user_id });
+    Object.assign(appointment, { id: uuid(), date, provider_id, user_id, status: 'pending' });
 
     this.appointments.push(appointment);
 
+    return appointment;
+  }
+
+  public async countAppointmentsByUserInDay(user_id: string, date: Date): Promise<number> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const count = this.appointments.filter(
+      appointment =>
+        appointment.user_id === user_id &&
+        appointment.date >= startOfDay &&
+        appointment.date <= endOfDay,
+    ).length;
+
+    return count;
+  }
+
+  public async findById(id: string): Promise<Appointment | undefined> {
+    const appointment = this.appointments.find(app => app.id === id);
+    return appointment;
+  }
+
+  public async save(appointment: Appointment): Promise<Appointment> {
+    const findIndex = this.appointments.findIndex(app => app.id === appointment.id);
+    this.appointments[findIndex] = appointment;
     return appointment;
   }
 }

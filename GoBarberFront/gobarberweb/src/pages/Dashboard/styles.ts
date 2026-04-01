@@ -495,6 +495,12 @@ export const Appointment = styled.div`
     font-size: 17px;
   }
 
+  small {
+    display: block;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
   @media (max-width: 640px) {
     flex-direction: column;
     align-items: stretch;

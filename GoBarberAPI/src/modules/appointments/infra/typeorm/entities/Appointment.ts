@@ -32,6 +32,18 @@ class Appointment {
   @Column('datetime')
   date: Date;
 
+  @Column({ nullable: true })
+  confirmation_code: string;
+
+  @Column({ default: false })
+  confirmed: boolean;
+
+  @Column('datetime', { nullable: true })
+  expires_at: Date;
+
+  @Column({ default: 'pending' })
+  status: 'pending' | 'confirmed' | 'expired' | 'cancelled';
+
   @CreateDateColumn()
   created_at: Date;
 

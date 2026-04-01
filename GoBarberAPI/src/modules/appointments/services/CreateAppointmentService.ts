@@ -1,9 +1,11 @@
-import { startOfHour, isBefore, getHours } from 'date-fns';
+import { startOfHour, isBefore, getHours, addMinutes } from 'date-fns';
+import { v4 as uuid } from 'uuid';
 import Appointment from '../infra/typeorm/entities/Appointment';
 import { injectable, inject } from 'tsyringe';
 import AppError from '@shared/errors/AppError';
 import IAppointmentsRepository from '../repositories/IAppointmentsRepository';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
 
 interface IRequest {
   provider_id: string;
@@ -19,6 +21,9 @@ class CreateAppointmentService {
 
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('NotificationsRepository')
+    private notificationsRepository: INotificationsRepository,
   ) {}
 
   public async execute({ date, provider_id, user_id }: IRequest): Promise<Appointment> {
@@ -51,6 +56,12 @@ class CreateAppointmentService {
       throw new AppError('Provider not found.', 404);
     }
 
+    // Anti-bot: Limite de agendamentos por usuário (máximo 3 por dia)
+    const appointmentsCount = await this.appointmentsRepository.countAppointmentsByUserInDay(user_id, appointmentDate);
+    if (appointmentsCount >= 3) {
+      throw new AppError('You have reached the maximum number of appointments per day.', 429);
+    }
+
     // Verificar se o horário já está ocupado
     const findAppointmentInSameDate = await this.appointmentsRepository.findByDate(
       appointmentDate,
@@ -61,10 +72,28 @@ class CreateAppointmentService {
       throw new AppError('This appointment time is already booked.', 409);
     }
 
+    // Gerar código de confirmação
+    const confirmationCode = Math.floor(100000 + Math.random() * 900000).toString(); // 6 dígitos
+
+    // Definir expiração (15 minutos)
+    const expiresAt = addMinutes(new Date(), 15);
+
     const appointment = await this.appointmentsRepository.create({
       provider_id,
       user_id,
       date: appointmentDate,
+    });
+
+    // Atualizar com código e expiração
+    appointment.confirmation_code = confirmationCode;
+    appointment.expires_at = expiresAt;
+    appointment.status = 'pending';
+    await this.appointmentsRepository.save(appointment);
+
+    // Enviar notificação com código
+    await this.notificationsRepository.create({
+      recipient_id: user_id,
+      content: `Seu agendamento foi criado. Código de confirmação: ${confirmationCode}. Expira em 15 minutos.`,
     });
 
     return appointment;

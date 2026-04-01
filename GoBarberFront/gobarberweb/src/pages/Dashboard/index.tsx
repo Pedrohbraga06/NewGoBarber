@@ -47,6 +47,7 @@ import {
 interface AppointmentResponse {
   id: string;
   date: string;
+  status: string;
   user: {
     name: string;
     avatar_url: string;
@@ -240,6 +241,19 @@ const Dashboard: React.FC = () => {
     (total, agendaDay) => total + agendaDay.appointments.length,
     0,
   );
+  const getStatusInfo = (status: string) => {
+    switch (status) {
+      case 'confirmed':
+        return { color: '#28a745', text: 'Confirmado' };
+      case 'pending':
+        return { color: '#ffc107', text: 'Pendente' };
+      case 'expired':
+        return { color: '#dc3545', text: 'Expirado' };
+      default:
+        return { color: '#b9b3c2', text: 'Cancelado' };
+    }
+  };
+
   const userInitials = user?.name ? getInitials(user.name) : 'GB';
 
   return (
@@ -392,7 +406,15 @@ const Dashboard: React.FC = () => {
                               <AvatarFallback>{getInitials(appointment.user.name)}</AvatarFallback>
                             )}
 
-                            <strong>{appointment.user.name}</strong>
+                            <div>
+                              <strong>{appointment.user.name}</strong>
+                              <small style={{
+                                color: getStatusInfo(appointment.status).color,
+                                fontWeight: 'bold'
+                              }}>
+                                {getStatusInfo(appointment.status).text}
+                              </small>
+                            </div>
                           </div>
                         </Appointment>
                       )) : (
@@ -428,7 +450,15 @@ const Dashboard: React.FC = () => {
                               <AvatarFallback>{getInitials(appointment.user.name)}</AvatarFallback>
                             )}
 
-                            <strong>{appointment.user.name}</strong>
+                            <div>
+                              <strong>{appointment.user.name}</strong>
+                              <small style={{
+                                color: getStatusInfo(appointment.status).color,
+                                fontWeight: 'bold'
+                              }}>
+                                {getStatusInfo(appointment.status).text}
+                              </small>
+                            </div>
                           </div>
                         </Appointment>
                       )) : (
@@ -464,7 +494,15 @@ const Dashboard: React.FC = () => {
                               <AvatarFallback>{getInitials(appointment.user.name)}</AvatarFallback>
                             )}
 
-                            <strong>{appointment.user.name}</strong>
+                            <div>
+                              <strong>{appointment.user.name}</strong>
+                              <small style={{
+                                color: getStatusInfo(appointment.status).color,
+                                fontWeight: 'bold'
+                              }}>
+                                {getStatusInfo(appointment.status).text}
+                              </small>
+                            </div>
                           </div>
                         </Appointment>
                       )) : (

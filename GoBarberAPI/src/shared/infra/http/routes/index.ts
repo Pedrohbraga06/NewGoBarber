@@ -1,4 +1,5 @@
 import { Router } from "express";
+import rateLimit from 'express-rate-limit';
 import usersRouter from "@modules/users/infra/http/routes/users.routes";
 import appointmentsRouter from "@modules/appointments/infra/http/routes/appointments.routes";
 import providersRouter from "@modules/appointments/infra/http/routes/providers.routes";
@@ -7,6 +8,15 @@ import passwordRouter from "@modules/users/infra/http/routes/password.routes";
 import profileRouter from "@modules/users/infra/http/routes/profile.routes";
 
 const routes = Router();
+
+// Rate limiting: 100 requests per 15 minutes per IP
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+});
+
+routes.use(limiter);
 
 routes.use('/appointments', appointmentsRouter)
 routes.use('/providers', providersRouter)
